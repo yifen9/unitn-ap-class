@@ -32,7 +32,7 @@ pub fn twomaps(){
 // it's there to convert the returned iterator into a Vec
 
 
-// map is LAZY
+// map is LAZY, since it is used on iterators
 pub fn lazymap_collect(){
     let numbers = vec![3, 6, 9, 12];
     let mut number_of_times = 0;
@@ -99,7 +99,6 @@ pub fn mapsownership(){
     println!("v: {:?}",v);
     println!("v: {:?}",newv);
     // using 'replace' returns a new string! no need for ownership transfer
-    // so many similar examples are not informative
 
     let n1 = Node::new(10);
     let n2 = Node::new(20);

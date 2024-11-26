@@ -61,16 +61,16 @@ pub fn goodmodder<'a, 'b>(c:&'b mut Container<'a>, a:&'a Inner){
 }
 
 pub mod test{
-    use crate::basedir::c99_QA::*;
+    // use crate::basedir::c99_QA::*;
     // use crate::lifetimes::lt::{*};
 
     pub fn main(){
-        let mut a = Inner::new();
-        let mut b = Container::new(&a);
-        b.addinner(&a);
-        // modder(&mut b);
-
-        goodmodder(&mut b, &a);
+        // let mut a = Inner::new();
+        // let mut b = Container::new(&a);
+        // b.addinner(&a);
+        // // modder(&mut b);
+        //
+        // goodmodder(&mut b, &a);
     }
 }
 

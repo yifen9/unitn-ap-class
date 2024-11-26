@@ -321,7 +321,6 @@ pub fn example_drop() {
 //   to the pool so that it can be reused later.
 // - You are logging information.
 
-// start here 22 oct
 
 /* ========== Rc ===========
    ========================= */
@@ -532,7 +531,7 @@ impl<T: Copy> Clone for NaiveRc<T> {
     fn clone(&self) -> Self {
         // QUIZ: why does this code not compile?
         // mutability | lifetime | ownership |
-        //self.reference_count += 1;
+        // self.reference_count += 1;
 
 
         //
@@ -642,7 +641,7 @@ pub fn refcell_usage() {
     *mptr = 11;
     println!("refcell {:?} + content {}", refcell, *mptr);
     // uncomment for panic.
-    // mem::drop(mptr);
+    mem::drop(mptr);
     let ptr1 = refcell.borrow();
     let ptr2 = refcell.borrow();
     let ptr3 = refcell.borrow();
@@ -656,6 +655,8 @@ pub fn refcell_usage() {
     // or use
     // mem::drop(mptr);
 }
+
+// start here
 
 pub fn refcell_usage_2(){
     let refcell = RefCell::new(10);
@@ -1023,7 +1024,7 @@ pub mod overflow {
 
         //
         // and here?
-        // println!("a next item = {:?}", a.tail());
+        println!("a next item = {:?}", a.tail());
     }
 }
 // We will overflow the stack.
@@ -1105,7 +1106,6 @@ impl<T> Graph<T> {
 }
 
 pub fn graphexample() {
-    let r = Rc::new(10);
     // Create some nodes
     let node_1 = Node::new(1);
     let node_2 = Node::new(2);
@@ -1160,7 +1160,6 @@ fn foo(cell: &Cell<u32>) {
     let value = cell.get();
     cell.set(value * 2);
 }
-
 pub fn cellexamplee() {
     let cell = Cell::new(1);
     let new_value = cell.get() + 10;
@@ -1227,6 +1226,10 @@ pub fn rcwithcellexample() {
     let wrapped_clone = wrapped.clone();
     println!("references after cloning: {:?}", wrapped.references());
     println!("clone references: {:?}", wrapped_clone.references());
+    let wrapped_clone2 = wrapped.clone();
+    println!("references after cloning2: {:?}", wrapped.references());
+    println!("references after cloning2: {:?}", wrapped_clone.references());
+    println!("references after cloning2: {:?}", wrapped_clone2.references());
 }
 
 

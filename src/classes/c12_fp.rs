@@ -116,7 +116,7 @@ pub mod closures{
         // < fn print3, [] >
 
         let print = || { println!("`color`: {}", color) };
-        // < fn print, [ color -> "green" ]>
+        // < fn print, [ color -> "green" ] >
         // Call the closure using the borrow.
         print();
 
@@ -143,6 +143,9 @@ pub mod closures{
             count += 1;
             println!("`count`: {}", count);
         };
+        // let mut inc2 = || {
+        //     count +=1;
+        // };
 
         // Call the closure using a mutable borrow.
         inc();
@@ -239,24 +242,24 @@ pub mod closures{
 
         // Capture 2 variables: `greeting` by reference and
         // `farewell` by value.
-        let diary = || {
+        let mut diary = || {
             // `greeting` is by reference: requires `Fn`.
             println!("I said {}.", greeting);
             // Mutation forces `farewell` to be captured by
             // mutable reference. Now requires `FnMut`.
-            // farewell.push_str("!!!");
+            farewell.push_str("!!!");
             println!("Then I screamed {}.", farewell);
             println!("Now I can sleep. zzzzz");
             // Manually calling drop forces `farewell` to
             // be captured by value. Now requires `FnOnce`.
-            // mem::drop(farewell);
+            mem::drop(farewell);
         };
 
         // Call the function which applies the closure.
         // QUIZ: which one compiles?
-        // apply_FnOnce(diary);
-        // apply_FnMut(diary);
-        apply_Fn(diary);
+        apply_FnOnce(diary);
+        // apply_FnMut(&mut diary);
+        // apply_Fn(&mut diary);
 
         //
         //
@@ -265,7 +268,7 @@ pub mod closures{
         // uncomment below:
         // DNC: error[E0525]: expected a closure that implements the `FnMut` trait, but this closure only implements `FnOnce`
         // QUIZ: what do i need to comment in the code of `diary` to make this work
-        apply_FnMut(diary);
+        // apply_FnMut(diary);
 
         //
         // if we comment the `mem::drop``, and the previous usage, this works
@@ -283,6 +286,28 @@ pub mod closures{
         println!("3 doubled: {}", apply_to_3(double));
     }
 
+    //  here
+
+    // Fn       : usable +  : uses its env to R
+    // FnMut    : usable +  : uses its env to R/W
+    // FnOnce   : usable 1  : uses its env to R/W/D
+    // Trait heirarchy: Fn <: FnMut <: FnOnce
+    //  -> what can we do with each of them?
+    // the point is always: the more i go down the hierarchy, the more i can do
+    //  the top can only be used once, the types below can be used multiple times
+    // How to use these?
+    //   Use FnOnce as a bound when you want to accept a parameter of function-like
+    //   type and only need to call it once. If you need to call the parameter repeatedly,
+    //   use FnMut as a bound; if you also need it to not mutate state, use Fn.
+    //
+
+    // back to the code above:
+    // - with diary being FN, we can pass it to any function
+    // - with diary being FnMut : we need it to be mut, we can only pass it as a &mut to apply_fnmut and apply_fnonce
+    // careful not to move diary, but to pass it as ref!
+    // - with diary being FnOnce we can pass it only to apply_fnonce
+
+
     // Back to Returning closures
     // Anonymous closure types are, by definition,
     // unknown, so we have to use impl Trait to return them.
@@ -295,6 +320,9 @@ pub mod closures{
     //      move
     // keyword must be used,
     // which signals that all captures occur by value.
+    // Why do we need this?
+
+    //
     // This is required because any captures by reference would be dropped
     // as soon as the function exited, leaving invalid references in the closure
 
@@ -317,7 +345,12 @@ pub mod closures{
         move || println!("This is a: {}", text)
     }
 
-    //start here
+    // fn create_fn_para<'a>(text : &'a String) -> impl Fn() + 'a {
+    fn create_fn_para<'a,'b : 'a>(text : &'a String, t2 : &'b String) -> Box<dyn Fn() + 'a> {
+        return Box::new( move || {
+            println!("This is a: {}, {}", & text, & t2);
+        });
+    }
 
     pub fn closures_output(){
         let fn_plain = create_fn();
@@ -325,8 +358,10 @@ pub mod closures{
         let fn_once = create_fnonce();
 
         fn_plain();
+        fn_plain();
         fn_mut();
         fn_once();
+        // fn_once();
     }
 
     // now a big FP example that uses closures
@@ -359,19 +394,18 @@ pub mod closures{
         println!("imperative style: {}", acc);
 
         // Functional approach
-        let sum_of_squared_odd_numbers: Vec<_> =
+        let sum_of_squared_odd_numbers: u32 =
             // again, from 0 to infinity
             (0..).
                 // All natural numbers squared
-                map(|n| { n * n })
-                .collect();
+                map(|n| n * n)
                 // Below upper limit: stop when reaching over upper
-                // .take_while(|&n_squared| { n_squared < upper })
-                // // keep only those that are odd
-                // .filter(|&n_squared| { is_odd(n_squared) })
-                // // Sum them
-                // .fold(0, |acc, n_squared| acc + n_squared);
-        // println!("functional style: {}", sum_of_squared_odd_numbers);
+                .take_while(|&n_squared| n_squared < upper)
+                // keep only those that are odd
+                .filter(|&n_squared| is_odd(n_squared))
+                // Sum them
+                .fold(0, |acc, n_squared| acc + n_squared);
+        println!("functional style: {}", sum_of_squared_odd_numbers);
     }
 
 }
@@ -392,8 +426,8 @@ pub mod iterators{
         // over the items in the vector v1 by calling
         // the iter method defined on Vec\<T\>.
         // This code by itself doesn’t do anything useful.
-        let v1 = vec![1, 2, 3];
-        let v1_iter = v1.iter();
+        let mut v1 = vec![1, 2, 3];
+        let v1_iter = v1.iter_mut();
 
         // These iterators can be used in a variety of ways.
         // For example, we can separate the creation of the iterator
@@ -456,6 +490,11 @@ pub mod iterators{
         assert_eq!(v1_iter.next(), Some(&2));
         assert_eq!(v1_iter.next(), Some(&3));
         assert_eq!(v1_iter.next(), None);
+
+        // start here
+
+        //WG - coordination / arrangement / proactiveness
+        // learning goals of the class wrt WG
 
         // Also note that the values we get from the calls to next are immutable references
         // to the values in the vector.
@@ -556,51 +595,6 @@ pub mod iterators{
     }
 
 
-
-    // There are other methods implemented on iterators within rust
-    // that are similar to one used in functional programming langauges.
-    // Some examples of these include
-    //      map,
-    //      fold,
-    //      sum,
-    //      filter,
-    //      zip, etc.
-    //
-    // The following example uses map, which we've seen before.
-    // The map() method applies a function to each element in an iterable
-    // and returns the resulting iterable, of each iteration, to the next function.
-    //
-    pub fn examplefpiterators() {
-        let vector = [1, 2, 3];
-        let result = vector.iter().map(|x| { x * 2 }).collect::<Vec<i32>>();
-        // another way to write the above statement
-        /*let result: Vec<i32> = vector.iter().map(|x| x * 2).collect();*/
-        println!("After mapping: {:?}", result);
-
-        // The following example uses sum,
-        // which takes an iterator and generates Self from the elements by “summing up” the items.
-        //
-        let su: u32 = vec![1, 2, 3, 4, 5, 6].iter().sum();
-        //
-        // The following example accomplishes the same thing using fold. Folding is useful whenever you have a collection of something, and want to produce a single value from it.
-        //
-        let sum: u32 = vec![1, 2, 3, 4, 5, 6].iter().fold(0, |mut summ, &val| {
-            summ += val;
-            summ
-        });
-        //
-        // The following example uses collect, which consumes the iterator and collects the resulting values into a collection data type.
-        //
-        let a = [1, 2, 3];
-        let doubled: Vec<i32> = a.iter()
-            .map(|&x| x * 2)
-            .collect();
-
-        assert_eq!(vec![2, 4, 6], doubled);
-        //
-        // A longer list of these functions can be found [here](https://doc.rust-lang.org/std/iter/trait.Iterator.html).
-    }
-
     // Previously we've created iterators by calling iter, into_iter, or iter_mut on a vector.
     // You can create iterators from the other collection types
     // in the standard library, such as hash map.
@@ -659,7 +653,7 @@ pub mod iterators{
         // QUIZ: group up- read up
         //      skip , zip , map , filter , sum
         // explain what each thing does to its input and thus their output
-        let sum: u32 = Counter::new()
+        let sum : Vec<u32>  = Counter::new()
             /* zip is an iterator that iterates over 2 other iterators, in this case
                   Counter::new   and  Counter::new().skip
              */
@@ -674,18 +668,58 @@ pub mod iterators{
             .filter(|x| x % 3 == 0)
             /*add all the numbers
              */
-            .sum();
-        println!("{}",sum);
+            .collect()
+            ;
+        // println!("{}",sum);
     }
 
 
-    // pub fn test(){
-    //     let mut x = vec![1,2,34,4];
-    //     x.iter().enumerate()
-    //         .map(|i|{if i.0==0 {i.1}})
-    //         .collect()
-    //         ;
+    // There are other methods implemented on iterators within rust
+    // that are similar to one used in functional programming languages.
+    // Some examples of these include
+    //      map,
+    //      fold,
+    //      sum,
+    //      filter,
+    //      zip, etc.
     //
-    // }
+    // The following example uses map,
+    // The map() method applies a function to each element in an iterable
+    // and returns the resulting iterable, of each iteration, to the next function.
+    //
+    pub fn examplefpiterators() {
+        let vector = [1, 2, 3];
+        let result = vector.iter().map(|x| { x * 2 }).collect::<Vec<i32>>();
+        // another way to write the above statement
+        /*let result: Vec<i32> = vector.iter().map(|x| x * 2).collect();*/
+        println!("After mapping: {:?}", result);
+
+        // The following example uses sum,
+        // which takes an iterator and generates Self from the elements by “summing up” the items.
+        //
+        let su: u32 = vec![1, 2, 3, 4, 5, 6].iter().sum();
+        //
+        // The following example accomplishes the same thing using fold.
+        // Folding is useful whenever you have a collection of something,
+        // and want to produce a single value from it.
+        //
+        let sum: u32 = vec![1, 2, 3, 4, 5, 6].iter().fold(0, |mut summ, &val| {
+            summ += val;
+            summ
+        });
+        //
+        // The following example uses collect, which consumes the iterator
+        // and collects the resulting values into a collection data type.
+        //
+        let a = [1, 2, 3];
+        let doubled: Vec<i32> = a.iter()
+            .map(|&x| x * 2)
+            .collect();
+
+        assert_eq!(vec![2, 4, 6], doubled);
+        //
+        // A longer list of these functions can be found
+        // [here](https://doc.rust-lang.org/std/iter/trait.Iterator.html).
+    }
 
 }

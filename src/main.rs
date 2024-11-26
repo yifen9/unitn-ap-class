@@ -7,8 +7,8 @@
 mod full_files;
 mod classes;
 
-// use crate::full_files as basedir;
-use crate::classes as basedir;
+use crate::full_files as basedir;
+// use crate::classes as basedir;
 
 use basedir::c01_basic as c1;
 use basedir::c02_ownership as c2;
@@ -22,7 +22,8 @@ use basedir::c08_traits as c9;
 use basedir::c10_OOP as c10;
 use basedir::c11_heap as c11;
 use basedir::c12_fp as c12;
-use basedir::c99_QA as cqa;
+// use basedir::c99_QA as cqa;
+use basedir::c14_conc as c14;
 
 // Below is the main function.
 // Notice that RR already knows we can run it (see the green triangle)
@@ -108,7 +109,7 @@ pub fn main() {
     // c11::example_drop();
     // c11::example_rc();
     // c11::implitictderef();
-    c11::arc();
+    // c11::arc();
     // c11::refcell_usage();
     // c11::refcell_usage_2();
     // c11::tests::it_sends_an_over_75_percent_warning_message();
@@ -119,7 +120,7 @@ pub fn main() {
     // c11::cellexamplee();
     // c11::rcwithcellexample();
     // c11::par::arcmutex();
-    //
+
     // // c12_fp
     // c12::closures::closuresexample();
     // c12::closures::capturingexample();
@@ -133,5 +134,12 @@ pub fn main() {
     // c12::iterators::using_other_iterator_trait_methods();
 
     // cqa::traitqa::testit();
+
+    // c14::thread_spawning();
+    // c14::thread_test();
+    // c14::channel_example();
+    // c14::mutex_example();
+    // c14::arc_mutex();
+
 }
 
