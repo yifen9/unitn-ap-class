@@ -1,2 +1,2 @@
 [registries]
-kellnr = { index = "git://advancedprogramming.disi.unitn.it/index", token = ""}
+#kellnr = { index = "git://advancedprogramming.disi.unitn.it/index", token = ""}

@@ -117,8 +117,8 @@ pub fn externalcall(){
 // in this course you'll use a local repository too, in order to share your code
 // see the project `.cargo/config` file for defining the local repo
 // then see Cargo.toml for the import of the kellnrtest crate
-use kellnrtest::external_function;
+// use kellnrtest::external_function;
 
-pub fn external_registry_call(){
-    println!("received trues {}", external_function())
-}
+// pub fn external_registry_call(){
+//     println!("received trues {}", external_function())
+// }

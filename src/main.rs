@@ -1,18 +1,15 @@
 #![allow(non_snake_case)]
-// This is the main executable file of our Rust project
-
-// Below are the modules whose functions we can call from this file:
-// we'll explain modules in the future
-// For now, know modules have the names of their directory, see file mod.rs there
-mod full_files;
+#![allow(dead_code)]
+#![allow(unused_parens)]
+#![allow(dead_code)]
+#![allow(non_camel_case_types)]
+#![allow(unused_imports)]
 mod classes;
 
-use crate::full_files as basedir;
-// use crate::classes as basedir;
-
+use crate::classes as basedir;
 use basedir::c01_basic as c1;
 use basedir::c02_ownership as c2;
-// use basedir::c03_enums as c3;
+use basedir::c03_enums as c3;
 use basedir::c04_structs as c4;
 use basedir::c05_modules as c5;
 use basedir::c06_testing as c6;
@@ -25,17 +22,11 @@ use basedir::c12_fp as c12;
 // use basedir::c99_QA as cqa;
 use basedir::c14_conc as c14;
 
-// Below is the main function.
-// Notice that RR already knows we can run it (see the green triangle)
-// Functions are written with the `fn` keyword
-// and they can be prefixed by a visibility modifier :
-//      pub => public, callable by other functions that import this module
-//      if one writes no modifier => private, only callable from this file
 pub fn main() {
     // // // from c01_basic
-    // c1::var_ass_mut();
-    // c1::vals_types();
-    // c1::expressions();
+    c1::var_ass_mut();
+    c1::vals_types();
+    c1::expressions();
     //
     // // from c02_ownership
     // c2::strings();
@@ -143,3 +134,59 @@ pub fn main() {
 
 }
 
+use std::fmt;
+use std::fmt::Formatter;
+// use std::marker::PointeeSized;
+
+#[derive(Debug)]
+enum C{
+    C1(i32,i32),
+    C2(bool,String)
+}
+#[derive(Debug)]
+struct D{
+    c : C,
+    s : String
+}
+impl D{
+    pub fn new() -> D{
+        D{ c: C::C1(0,0), s: "".to_string() }
+    }
+    pub fn new_with_C(cc : C) -> D{
+        let content = match &cc {
+            C::C1(_, _) => String::from("not there"),
+            C::C2(_, s) => s.clone()
+        };
+        D{
+            c : cc,
+            s: content
+        }
+    }
+    pub fn larger(&self) -> usize {
+        let con = match &self.c {
+            C::C1(_,_) => 0,
+            C::C2(_,ss) => ss.len(),
+        };
+        let l = self.s.len();
+        return if l > con {l} else {con};
+    }
+}
+
+// impl fmt::Display for D {
+//     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+//         write!(f, "D: {} with {:?}", self.s, self.c)
+//     }
+// }
+// pub fn main () {
+//     let c1 = C::C1(0,1);
+//     let c2 = C::C2(true, String::from("no way jose"));
+//     println!("gotten {:?}",D::new());
+//     let d1 = D::new_with_C(c1);
+//     println!("dbg {:?}",d1);
+//     println!("fmt {}",d1);
+//     let d2 = D::new_with_C(c2);
+//     println!("dbg {:?}",d2);
+//     println!("fmt {}",d2);
+//     println!("larger {}",d2.larger());
+//     println!("larger {}",d1.larger());
+// }
