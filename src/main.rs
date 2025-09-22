@@ -7,32 +7,23 @@
 mod classes;
 
 use crate::classes as basedir;
-use basedir::c01_basic as c1;
-use basedir::c02_ownership as c2;
-use basedir::c03_enums as c3;
-use basedir::c04_structs as c4;
-use basedir::c05_modules as c5;
-use basedir::c06_testing as c6;
-use basedir::c07_lifetimes as c7;
-use basedir::c13_maps as cm;
-use basedir::c08_traits as c9;
-use basedir::c10_OOP as c10;
-use basedir::c11_heap as c11;
-use basedir::c12_fp as c12;
-// use basedir::c99_QA as cqa;
-use basedir::c14_conc as c14;
-
+use classes::c01_basic as c1;
+use classes::c01_std;
+use classes::c02_ownership as c2;
+use classes::c03_enums as c3;
+use classes::c04_structs as c4;
+use classes::c07_lifetimes as c7;
 pub fn main() {
     // // // from c01_basic
-    c1::var_ass_mut();
-    c1::vals_types();
-    c1::expressions();
+    // c1::var_ass_mut();
+    // c1::vals_types();
+    // c1::expressions();
     //
-    // // from c02_ownership
-    // c2::strings();
-    // c2::vec();
+    // // from c01_std
+    // c01_std::strings();
+    // c01_std::vec();
+    // c01_std::hashmap()
 
-    // c2::sc02_ownership.rsashmap();
     // c2::ownership();
     // c2::refs_and_borrowing();
     // c2::slices();
@@ -77,6 +68,7 @@ pub fn main() {
     //
     // // open c08_lifetimes
     // c7::lifetime_test();
+    // c7::nll_example();
     // c7::main();
     //
     // // c09_traitspoly
@@ -134,8 +126,6 @@ pub fn main() {
 
 }
 
-use std::fmt;
-use std::fmt::Formatter;
 // use std::marker::PointeeSized;
 
 #[derive(Debug)]

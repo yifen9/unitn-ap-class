@@ -216,7 +216,7 @@ fn nll() {                                           // SCOPE TREE
                                                     // | +- `alias` scope end
                                                     // +- `name` scope end
 }
-fn nll_example() {
+pub fn nll_example() {
     let mut s = String::from("hello");
     let r1 = &s;
     let r2 = &s;

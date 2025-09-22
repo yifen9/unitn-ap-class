@@ -1,11 +1,5 @@
-
-// This code is not for this class, it is needed for class c04_structs
-//  in the following code, we cannot access the struct name,
-//  let alone its fields
 // use crate::full_files::c04_structs::Rectangle;
 // DNC: Struct `Rectangle` is private [E0603]
-
-// This code is not for this class, it is needed for class c04_structs
 use crate::classes::c04_structs::new_rhombus;
 use crate::classes::c04_structs::Square;
 use crate::classes::c04_structs::Rhombus;
@@ -39,4 +33,3 @@ fn _showcase_access () {
     // let _a = rr.acute_angle;
     // DNC: error[E0616]: field `acute_angle` of struct `Rhombus` is private
 }
-// GOTO back to c04_structs

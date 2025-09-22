@@ -32,7 +32,7 @@ const _FALSE : i32 = 0;
 // QUIZ: can I use const FALSE from `src/main.rs` ?
 
 pub fn vals_types(){
-    // integers, usign and floats
+    // integers, usize and floats
     let x : i32 = 10;
     let y : i64 = 20;
     println!("Value of +: {}", x+(y as i32)); // explicit casting only
@@ -92,7 +92,6 @@ pub fn vals_types(){
         Err(..) => println!("this was not an integer: {}", trimmed),
     };
 
-
     let mut aa = [(1,2),(1,4)];
     println!("Array1 {:?}",aa);
     aa = [aa[0],(4,5)];
@@ -134,7 +133,7 @@ pub fn expressions(){
     }
 
     // array iteration
-    let a = [10, 20, 30, 40, 50];
+    let mut a = [10, 20, 30, 40, 50];
     for element in a.iter() {   // iter, iter_mut, into_iter
         println!("Iteration loop: the value is: {}", element);
     }

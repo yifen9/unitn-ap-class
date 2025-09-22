@@ -2,6 +2,7 @@
 
 // Below is a list of those files inside this directory that are externally visible
 pub mod c01_basic;
+pub mod c01_std;
 pub mod c02_ownership;
 pub mod c03_enums;
 pub mod c04_structs;
@@ -15,5 +16,4 @@ pub mod c10_OOP;
 pub mod c11_heap;
 pub mod c12_fp;
 pub mod c99_QA;
-
 pub mod c14_conc;
