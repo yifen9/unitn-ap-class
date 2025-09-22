@@ -6,7 +6,6 @@ pub fn ownership(){
         let _s2 = s1;// moves s1 into s2
         // decomment the print below
         // println!("{}", s1); // error, `s1` doesn't own the value anymore.
-
     }
     // Q: what happens when I decomment this line?
     // println!("{}", s1);
@@ -18,31 +17,32 @@ pub fn ownership(){
 
         println!("s1 = {}, s2 = {}", s1, s2);
     }
-    // ownership for heap vals, not stack ones
+    // ownership for Copy types
     let x: i32 = 5;
-    let y = x;
-    println!("x = {}, y = {}", x, y); //works
-    // owenership for function params
-    ownership_for_functions();
+    {
+        let y = x;
+        println!("x = {}, y = {}", x, y); //works
+    }
 }
 
-// QUIZ: when is the memory for the heap-allocated `s` freed ?
-fn ownership_for_functions() {
+// Q: when is the memory for the heap-allocated `s` freed ?
+pub fn ownership_for_functions() {
     let s = String::from("hello");
-    takes_ownership(s );    // move s to 'takes_ownership'
+    takes_ownership( s );
     // Q: is s live here?
     let x = 5;
     // 'x' is Copy, so it is copied, not moved
     makes_copy(x);
-}   // 'x' and 's'  go out of scope.
+    //
+}
 
-fn takes_ownership(some_string: String) { // some_string comes into scope
+fn takes_ownership(some_string: String) {
     println!("{}", some_string);
-}   // 'some_string' goes out of scope -> call to Drop
+}
 
-fn makes_copy(some_integer: i32) { // some_integer comes into scope
+fn makes_copy(some_integer: i32) {
     println!("{}", some_integer);
-}   // 'some_integer' goes out of scope -> nothing to call
+}
 
 ///     https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html
 pub fn refs_and_borrowing(){
@@ -67,7 +67,13 @@ pub fn refs_and_borrowing(){
     println!("r1 and r2 and r3: {} and {} and {}", r1, r2, r3);
     // QUIZ: does this code compile? can we uncomment this line?
     let r3 = &mut s;
+    // let x = s;
     println!("r3: {} ", r3);
+    // println!("{}",x);
+    //
+    // println!("r1 and r2 and r3: {} and {} and {}", r1, r2, r3);
+
+    // see dangle
 
     let string = no_dangle();
     println!("String {}",string);
@@ -83,7 +89,7 @@ fn change(some_string: &mut String) {
     some_string.push_str(", world");
 }
 
-// fn dangle() -> & String {
+// fn dangle() -> &'static String {
 //     let s = String::from("hello");
 //     &s
 // }

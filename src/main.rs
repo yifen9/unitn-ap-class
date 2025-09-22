@@ -25,7 +25,8 @@ pub fn main() {
     // c01_std::hashmap()
 
     // c2::ownership();
-    // c2::refs_and_borrowing();
+    // c2::ownership_for_functions();
+    c2::refs_and_borrowing();
     // c2::slices();
     // c2::ownership_and_compound();
     //s
