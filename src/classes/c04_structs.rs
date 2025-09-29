@@ -1,6 +1,6 @@
 //      https://doc.rust-lang.org/book/ch05-00-structs.html
 struct User {
-    username: String,
+    pub(crate) username: String,
     email: String,
     sign_in_count: u64,
     active: bool,
@@ -12,7 +12,7 @@ pub fn struct_usage(){
         username: String::from("someusername123"),
         active: true,
         sign_in_count: 1,
-    };
+    }; // Q: can i uncomment the line below ?
     // _user0.email = String::new();
     let mut user1 = User {
         email: String::from("someone@example.com"),
@@ -75,6 +75,7 @@ struct Rectangle {
 }   // Usage:  println!("{:?}",r);
 
 use std::fmt;
+
 ///     https://doc.rust-lang.org/rust-by-example/hello/print/print_display.html
 impl fmt::Display for Square {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -86,9 +87,7 @@ pub fn struct_printing() {
     let rect = Rectangle{ width: 10, height: 20 };
     let squa = Square{side: 10};
     // println!("Printing a rectangle {}", rect);
-    // DNC: error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
-    // so we have to use the {:?}
-    println!("Printing a rectangle {:?}", rect);
+    println!("Printing a rectangle {:?}", rect); // use :?
     println!("Printing a square {}", squa);
 }
 
@@ -106,37 +105,15 @@ pub fn new_rhombus() -> Rhombus{
 pub fn _new_square() -> Square{
     return Square{ side: 0 };
 }
-// GOTO structshelper file
-// come back
 
-/* Struct "impl"s.
-    Rust supports object-oriented programming (OOP).
-     In OOP one defines methods in a class.
-     In Rust, this is called methods of structs,
-     which are implemented using the `impl` keyword.
-     One struct can have multiple `impl` blocks.
- */
+// GOTO structshelper file
+
+
 
 impl Rectangle {
-    /// a private function for the Rectangle struct
-    // we use `&self` instead of rectangle: `&Rectangle`
-    // because Rust knows the type of `self` is `Rectangle`
-    // due to the "impl Rectangle" above.
-    // Note that we still need to use the `&` before `self`,
-    // and this checks out with OO languages where objects are passed
-    // by reference (&) and not by copy.
-    // Methods
-    // 1) can take ownership of self,
-    //      like the 'take_ownership' method (see its signature),
-    // 2) borrow `self` immutably
-    //      as we’ve done here,
-    // 3) or borrow `self` mutably
-    //      as the function 'double' does
     fn area(&self) -> u32 {
         self.width * self.height
     }
-    /// a public method
-    // methods can be public too
     pub fn perimeter(& self) -> u32 {
         return self.height * 2 + self.width * 2;
     }
@@ -153,9 +130,6 @@ impl Rectangle {
 }
 
 
-// Sometimes we want to define functions for structs.
-// The difference between a *method* and a *function* of a struct
-// is that a *function* of a struct doesn't need an instance of the struct to work with.
 impl Rectangle {
     fn square(size: u32) -> Rectangle {
         Rectangle {
@@ -163,15 +137,10 @@ impl Rectangle {
             height: size,
         }
     }
-    // one often defines constructors this way
     pub fn new() -> Rectangle {
         Rectangle{ width: 10, height: 20 }
     }
-    // note that there is no function overloading,
-    // so the following is not correct,
-    // you have to change the name of the function
-    // DNC: error[E0201]: duplicate definitions with name `new`:
-    // pub fn new_wh( width : u32, height : u32) -> Rectangle {
+    // pub fn new( width : u32, height : u32) -> Rectangle {
     //     Rectangle{ width, height }
     // }
     pub fn new_with_params( width : u32, height : u32) -> Rectangle {
@@ -180,27 +149,16 @@ impl Rectangle {
 }
 
 pub fn struct_impl(){
-    // this is how functions of a struct are called, i.e., with  ::
     let mut r = Rectangle::new();
-    // this is how methods are called
-    // note that the `&self` parameter is written in dot notation
     let a = r.area();
     r.double();
-    // they can also be written in infix form, but this is strongly discouraged
     let p = Rectangle::perimeter(&r);
     println!("The Rectangle is {:?}",r);
     println!("Area: {} and Perimeter: {}", a, p);
 }
 
-// END
 
-
-// While you learn where each type is stored, use the cheatsheet below
-// but note that it contains a lot more types than we have seen or that we will see:
-//  https://cs140e.sergio.bz/notes/lec3/cheat-sheet.pdf
-
-
-// additions
+//
 
 struct Test {
     pub f: i32,
@@ -213,46 +171,9 @@ pub fn ownstructs() {
     };
     let new_f = example.f;
     let new_s = example.s;
-    println!("First {}", new_f);        // copied or moved ?
-    println!("Second {:?}",new_s);      // copied or moved ?
-    // who owns the vector of 1s?
-    // println!("vec {}",example.s);
-    // return example;
+    println!("First {}", new_f);
+    println!("Second {:?}",new_s); // who owns the vector of 1s?
+    //Q: can i uncomment below?
+    // println!("vec {:?}",example.s);
+    // println!("Second {:?}",new_s);
 }
-
-pub fn testvec(){
-    let mut v = vec![5];
-    v.push(6);
-
-    let sixindex = findinv(&v);
-    v.push(9);
-}
-fn findinv(v : &Vec<i32>) -> i32 {
-    let mut counter =0;
-    for x in v.iter() {
-        if *x == 6{
-            return counter;
-        }
-        counter+=1;
-    }
-    return -1;
-}
-
-// trait Asd{
-//     fn new();
-// }
-//
-// trait Frgs{
-//     fn new();
-// }
-//
-// impl Asd for Rectangle {
-//     fn new() {
-//         todo!()
-//     }
-// }
-// impl Frgs for Rectangle{
-//     fn new() {
-//         todo!()
-//     }
-// }

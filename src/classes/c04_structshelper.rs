@@ -1,35 +1,27 @@
+// accessibility modifiers across modules
+
 // use crate::full_files::c04_structs::Rectangle;
 // DNC: Struct `Rectangle` is private [E0603]
 use crate::classes::c04_structs::new_rhombus;
 use crate::classes::c04_structs::Square;
 use crate::classes::c04_structs::Rhombus;
 use crate::classes::c04_structs::retu;
-fn _showcase_access () {
+pub fn _showcase_access () {
+    // Q: can i uncomment?
     // let a = retu();
-    // a.asd();
+    // println!("{}",a.username);
 
+    // Q: can i uncomment?
     // let s : Square = Square{
     //     side : 01,
     // };
 
-
-
     // QUIZ: can i write the following:
     // let rr = Rhombus{ side: 0, acute_angle: 0 };
-    // Y/N
-
-
-
-
-
-    // DNC: error[E0451]: field `acute_angle` of struct `Rhombus` is private
 
     let rr = new_rhombus();
-    // notice that the `side` is still immutable, so it cannot be assigned to
-    // rr.side = 10;
-    // DNC: error[E0594]: cannot assign to `rr.side`, as `rr` is not declared as mutable
     let _x = rr.side;
-    // and the `acute_angle` field is private, so inaccessible
+    // rr.side = 10;
+
     // let _a = rr.acute_angle;
-    // DNC: error[E0616]: field `acute_angle` of struct `Rhombus` is private
 }

@@ -28,9 +28,10 @@ pub fn enum_usage(){
 ///     https://doc.rust-lang.org/std/option/enum.Option.html
 pub fn option(){
     let x: i8 = 5;
-    let y: Option<i8> = None; //Some(5);
+    let y: Option<i8> = Some(5); // None
     // QUIZ: can i do:
     // let sum = x + y;
+
     let nopt : Option<i32> = None;
     let opt = Some(10);
 
@@ -51,13 +52,14 @@ pub fn patternmatching(){
     //     IpAddr::V6(a) => println!("Is V6")
     // };
     match home {
-        IpAddr::V4(127, b, c, d) => println!("Is V4 loopback"),
+        IpAddr::V4(127, _, c, d) => println!("Is V4 loopback"),
         IpAddr::V4(a, b, c, d) => println!("Is V4"),
         IpAddr::V6(a) => println!("Is V6"),
-        _ => println!(" errror")
+        IpAddr::V0() => println!("what")
+        // _ => println!(" errror")
     };
     let _variable = match loopback {
-        IpAddr::V4(127, b, c, d) => Some(loopback),
+        IpAddr::V4(127, b, c, d) => Some(b),
         _ => None
     };
     // Q : what is the type of `_variable` ?
@@ -74,6 +76,7 @@ pub fn patternmatching(){
         (Some(_),None) => {false},
         (None,Some(_)) => {false},
         (None, None) => {false},
+        // _ => true
     };
     println!("Are they the same? {}", test_eq);
 
@@ -81,6 +84,22 @@ pub fn patternmatching(){
     let isnone = opt.is_none();
     let content = opt.unwrap();
     let exp = opt.expect("insert error message here");
+
+    // iflet!
+    let optional = Some(7);
+    match optional {
+        Some(i) => println!("This is a really long string and `{:?}`", i),
+        _ => {},
+        // ^ Required because `match` is exhaustive. Doesn't it seem
+        // like wasted space?
+    };
+    if let Some(i) = optional {
+        println!("Matched {:?}!", i);
+    }
+    let home = IpAddr::V4(127, 0, 0, 1);
+    if let IpAddr::V0() = home {
+        println!("home")
+    }
 }
 
 
@@ -119,13 +138,13 @@ pub fn errors() {
 
 
 fn qm() -> Option<i32> {
-    let x : Result<(),()> = Ok(());
-    let r = retop()?;
+    let r1 = retop()?;  // retop : void -> Option<String>
+    // Q: what happens if i remove the `?` ?
     let r = match retop(){
         Some(z) => z,
         None => return None,
     };
-    return Some(4);
+    return Some(r.len() as i32);
 }
 pub fn testqm() {
     let r = qm();
@@ -140,6 +159,8 @@ fn retn() -> Option<i32> {
     return None;
 }
 
+
+// -- --- -- --
 
 use std::fs::File;
 use std::io::{Read, Write};

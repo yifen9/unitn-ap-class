@@ -12,6 +12,7 @@ use classes::c01_std;
 use classes::c02_ownership as c2;
 use classes::c03_enums as c3;
 use classes::c04_structs as c4;
+use classes::c04_structshelper as c4b;
 use classes::c07_lifetimes as c7;
 pub fn main() {
     // // // from c01_basic
@@ -26,7 +27,7 @@ pub fn main() {
 
     // c2::ownership();
     // c2::ownership_for_functions();
-    c2::refs_and_borrowing();
+    // c2::refs_and_borrowing();
     // c2::slices();
     // c2::ownership_and_compound();
     //s
@@ -35,11 +36,14 @@ pub fn main() {
     // c3::option();
     // c3::patternmatching();
     // c3::errors();
+    // c3::testqm();
     //
     // // from c04_structs
     // c4::struct_usage();
     // c4::struct_printing();
+    c4b::_showcase_access();
     // c4::struct_impl();
+    // c4::ownstructs();
 
     // c3::testqm();
     // let r = c3::readfilecontent();

@@ -137,6 +137,7 @@ pub fn ownership_and_compound(){
     let first_nonnmut = &v[0];
     // note that this now is a &String
 
+    // check the types!
     let mut first_mut = v.get_mut(0).unwrap();
     first_mut.push_str(" else");
     println!("First Element: {}",first_mut);
@@ -158,4 +159,10 @@ pub fn ownership_and_compound(){
 
     let mut vv = [v05,v6plus].concat();
     println!("{:?} == {:?}",v,vv);
+
+    // if (true ){
+    //     return 5;
+    // }else{
+    //     return 'a';
+    // }
 }

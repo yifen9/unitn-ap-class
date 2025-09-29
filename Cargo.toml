@@ -1,15 +1,12 @@
 [package]
 name = "AP-class"
 version = "0.1.0"
-edition = "2021"
+edition = "2025;o"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# local library import, with local path
 libtest = { path = "../libtest" } # no need to include "libleaf"
-
-# web library import via `crates.io`
 rand = "0.8.4"
-
+#piston_window = { version = "0.120.0", git = "https://github.com/PistonDevelopers/piston" }
 
