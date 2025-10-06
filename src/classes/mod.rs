@@ -8,10 +8,12 @@ pub mod c03_enums;
 pub mod c04_structs;
 pub mod c04_structshelper;
 pub mod c05_modules;
+
+pub mod c07_generics;
 pub mod c06_testing;
-pub mod c07_lifetimes;
+pub mod c08_lifetimes;
 pub mod c13_maps;
-pub mod c08_traits;
+pub mod c09_traits;
 pub mod c10_OOP;
 pub mod c11_heap;
 pub mod c12_fp;

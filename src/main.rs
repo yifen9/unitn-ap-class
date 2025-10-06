@@ -13,7 +13,8 @@ use classes::c02_ownership as c2;
 use classes::c03_enums as c3;
 use classes::c04_structs as c4;
 use classes::c04_structshelper as c4b;
-use classes::c07_lifetimes as c7;
+use classes::c07_generics as c7;
+use classes::c08_lifetimes as c8;
 pub fn main() {
     // // // from c01_basic
     // c1::var_ass_mut();
@@ -41,7 +42,7 @@ pub fn main() {
     // // from c04_structs
     // c4::struct_usage();
     // c4::struct_printing();
-    c4b::_showcase_access();
+    // c4b::_showcase_access();
     // c4::struct_impl();
     // c4::ownstructs();
 
@@ -58,27 +59,18 @@ pub fn main() {
     // c5::external_registry_call();
     //
     // // open c06_testing
-    //
-    // // open c07_project
-
-    // // c_07b_maps
-    // cm::singlemap();
-    // cm::twomaps();
-    // cm::lazymap_collect();
-    // cm::lazymap_nocollect();
-    // cm::string_tolower();
-    // cm::maps_options();
-    // cm::mapsownership();
 
     //
-    // // open c08_lifetimes
-    // c7::lifetime_test();
-    // c7::nll_example();
-    // c7::main();
+    // c7::struct_generic();
+    // c7::generics_example();
+    // c7::explicit_type();
+
+    //
+    // c8::lifetime_test();
+    // c8::nll_example();
+    c8::main();
     //
     // // c09_traitspoly
-    // c9::struct_generic();
-    // c9::generics_example();
     // c9::traitexample();
     // c9::example_notify();
     // c9::animals_example();

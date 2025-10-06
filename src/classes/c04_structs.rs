@@ -1,6 +1,6 @@
 //      https://doc.rust-lang.org/book/ch05-00-structs.html
 struct User {
-    pub(crate) username: String,
+    pub username: String,
     email: String,
     sign_in_count: u64,
     active: bool,
@@ -121,14 +121,12 @@ impl Rectangle {
         self.width = self.width * 2;
         self.height = self.height * 2;
     }
-    fn take_ownership(self) {
-    }
+    fn take_ownership(self) { }
     // QUIZ: are these methods or functions:
     // 1 pub fn test1(&self) ...
     // 2 fn test2(&self, arg: int) ...
     // 3 fn test3(arg : int) ...
 }
-
 
 impl Rectangle {
     fn square(size: u32) -> Rectangle {

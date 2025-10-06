@@ -1,11 +1,12 @@
 [package]
 name = "AP-class"
 version = "0.1.0"
-edition = "2025;o"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# QUIZ
 libtest = { path = "../libtest" } # no need to include "libleaf"
 rand = "0.8.4"
 #piston_window = { version = "0.120.0", git = "https://github.com/PistonDevelopers/piston" }
