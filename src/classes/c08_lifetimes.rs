@@ -12,6 +12,7 @@ struct User2 {
     sign_in_count: u64,
     active: bool,
 }
+#[derive(Debug)]
 struct IntUser<'a> {
     username: &'a i32,
     email: &'a i32,
@@ -40,22 +41,22 @@ pub fn lifetime_test() {
 //         {                       //          |
 //         let mut x : &i32 = &5;  // -+-- 'b  |
 //         x = &r;                 //  |       |
-//         println!("{}",x);
+//         println!("{}",x);       //  |       |
 //         }                       // -+       |
 //                                 //          |
 //         println!("r: {}", r);   //          |
 //     }                           // ---------+
 //     // QUIZ: does this code respect lifetimes?
-    // {
-    //     let r;             // ---------+-- 'a
-    //                             //          |
-    //     {                       //          |
-    //         let x = 5;      // -+-- 'b  |
-    //         r = &x;             //  |       |
-    //     }                       // -+       |
-    //                             //          |
-    //     println!("r: {}", r);   //          |
-    // }                           // ---------+
+//     {
+//         let r;             // ---------+-- 'a
+//                                 //          |
+//         {                       //          |
+//             let x = 5;      // -+-- 'b  |
+//             r = &x;             //  |       |
+//         }                       // -+       |
+//                                 //          |
+//         println!("r: {}", r);   //          |
+//     }                           // ---------+
 }
 
 
@@ -66,15 +67,15 @@ pub fn lifetime_test() {
 
 pub fn uselongest() {
     let x = String::from("hi");
-
+    let z;
     {
-        let z;
         let y = String::from("there");
         // z = longest(&x,&y);
         z = correct_longest(&x,&y); //will be &y
 
         println!("z = {}",z);
     } //drop y, and thereby z
+    // println!("z = {}", z);
 }
 
 fn correct_longest<'a>(x:&'a str, y:&'a str) -> &'a str {
@@ -86,13 +87,19 @@ fn another_longest<'a,'b>(x:&'a str, y:&'b str) -> &'b str {
     // return if x.len() > y.len() { x } else { y };
     return y;
 }
-// FAQs 1, 2, 3
-
 
 // Q: // why is this ok?
 fn outliving_longest<'b, 'a: 'b>(x:&'a str, y:&'b str) -> &'b str {
     if x.len() > y.len() { x } else { y}
 }
+
+// FAQs 1, 2, 3
+// fn one(x: &str) -> &str{        // x : 'a -> 'a
+//     x
+// }
+// fn selfone<'a>(&self, x:&'a str)-> &'a str{
+//     x
+// }
 
 pub fn testintuser(){
     let i = 5;
@@ -114,6 +121,7 @@ pub fn testintuser(){
             sign_in_count: 1,
         };
     }
+    // println!("{:?}",user2);
 }
 
 
@@ -139,9 +147,8 @@ pub fn nll_example() {
     let r3 ;
     println!("{} and {}", r1, r2);
     r3 = &mut s;  // r1 and r2 are no longer used after this point
-    // QUIZ: can i do this ?
+    // QUIZ: can i uncomment this ?
     // println!("{}", r3);
-
 }
 
 

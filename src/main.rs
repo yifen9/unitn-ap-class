@@ -15,6 +15,7 @@ use classes::c04_structs as c4;
 use classes::c04_structshelper as c4b;
 use classes::c07_generics as c7;
 use classes::c08_lifetimes as c8;
+use classes::c09_traits as c9;
 pub fn main() {
     // // // from c01_basic
     // c1::var_ass_mut();
@@ -67,12 +68,13 @@ pub fn main() {
 
     //
     // c8::lifetime_test();
+    // c8::uselongest();
     // c8::nll_example();
-    c8::main();
+    // c8::main();
     //
     // // c09_traitspoly
-    // c9::traitexample();
-    // c9::example_notify();
+    c9::traitexample();
+    c9::example_notify();
     // c9::animals_example();
     // // c9::example_supertraits();
     //
