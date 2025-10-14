@@ -73,10 +73,10 @@ pub fn main() {
     // c8::main();
     //
     // // c09_traitspoly
-    c9::traitexample();
+    // c9::traitexample();
     c9::example_notify();
     // c9::animals_example();
-    // // c9::example_supertraits();
+    // c9::example_supertraits();
     //
     // // c10_oop
     // c10::example_oop1();

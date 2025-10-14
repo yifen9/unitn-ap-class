@@ -177,21 +177,29 @@ struct ImportantExcerpt<'a> {
 
 impl<'a> ImportantExcerpt<'a> {
     // QUIZ: do i need the lifetime annotation here on &self?
-    // fn level(&self) -> i32 {
-    //     3
-    // }
+    fn level(&self) -> i32 {
+        3
+    }
     // QUIZ: do i need the lifetime annotation here ?
-    // fn announce_and_return_part(&self, announcement: &str) -> &str {
-    //     println!("Attention please: {}", announcement);
-    //     self.part
-    // }
-
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
     fn announce_and_return_part_2(&self, announcement: &str) -> &str {
         println!("Attention please: {}", announcement);
         self.part
     }
 }
 
+struct UnimportantExcerpt<'a, 'b>{
+    part1: &'a str,
+    part2: &'b str
+}
+impl<'a, 'b> UnimportantExcerpt<'a, 'b>{
+    fn testme(&self, param: &str) -> &str{
+        self.part2
+    }
+}
 
 pub fn main() {
     let novel = String::from("Call me Ishmael. Some years ago...");

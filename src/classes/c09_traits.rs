@@ -14,17 +14,14 @@ pub trait Summary {
         println!("Hello")
     }
 }
-
 pub struct NewsArticle {
     pub headline: String,
     pub location: String,
     pub author: String,
     pub content: String,
 }
-
 // QUIZ: Will this compile:
 // impl Summary for NewsArticle {
-//
 // }
 
 impl Summary for NewsArticle {
@@ -125,6 +122,19 @@ impl Display for NewsArticle {
         Ok(())
     }
 }
+
+// pub trait Sum{
+//     fn summarize(&self) -> String;
+// }
+// impl Sum for Tweet {
+//     fn summarize(&self) -> String {
+//         todo!()
+//     }
+// }
+
+// fn testx (param : &(impl Sum + Summary)) {
+//     param.summarize();
+// }
 
 
 fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
@@ -232,7 +242,6 @@ impl<T> Pair<T> {
     }
 }
 impl<T: Display + PartialOrd> Pair<T> {
-
     fn cmp_display(&self) {
         if self.x >= self.y {
             println!("The largest member is x = {}", self.x);
@@ -285,7 +294,6 @@ fn example_derivable() {
 
 /* === Self (capital S) ====
    ====================== */
-
 trait T {
     type Item;
     const C: i32;
@@ -309,12 +317,6 @@ pub fn test () {
     let n = st.f();
 }
 
-// what is the difference between a generic struct and one
-// that defines its type alias?
-
-//
-// the control of who instantiates the type: caller/callee
-
 
 // pub fn testtt(a : Box<dyn T<Item = i32>>) -> ST{
 //     return 3;
@@ -322,22 +324,10 @@ pub fn test () {
 
 /* ===== Super Traits ======
    ====================== */
-// Rust doesn't have "inheritance", but you can define a
-// trait as being a superset of another trait.
-//
-//  what is the difference between trait inheritance and class inheritance
 
-//
-// traits only extend the behaviour
-// classes also extend the shape
-// For example:
 trait Person {
     fn name(&self) -> &String;
 }
-/*// Person is a supertrait of Student.
-// Implementing Student requires you to also impl Person.
-// so a Student 'is a' Person
-*/
 trait Student: Person {
     fn university(&self) -> String;
 }
@@ -345,19 +335,11 @@ trait Programmer {
     fn fav_language(&self) -> String;
     fn git_username(&self) -> String;
 }
-/*
-// CompSciStudent (computer science student) is a subtrait
-// of both Programmer and Student. Implementing CompSciStudent
-// requires you to impl both supertraits
-// and their supertraits
-*/
 trait CompSciStudent: Programmer + Student {
     fn git_username(&self) -> String;
 }
-// why can we have this "multiple inheritance" ?
+// Q: why can we have this "multiple inheritance" ?
 
-// This function uses all the methods available as
-// something that implements CompSciStudent
 fn comp_sci_student_greeting(student: &impl CompSciStudent) -> String {
     format!(
         "My name is {} and I attend {}. My favorite language is {}. My Git username is {}",
@@ -365,7 +347,7 @@ fn comp_sci_student_greeting(student: &impl CompSciStudent) -> String {
         student.university(),
         student.fav_language(),
         Programmer::git_username(student)
-        // student.git_username()
+        // student.git_username(), // Q: comment above, see error
     )
 }
 
@@ -399,7 +381,6 @@ impl Person for Entity {
     }
 }
 
-// let's now test the previous function on some Entity
 pub fn example_supertraits(){
     let e = Entity{
         nm : String::from("marco")
@@ -416,26 +397,6 @@ pub fn example_supertraits(){
 
 /* ===== Polymorphism ======
    ========================= */
-// To many people, polymorphism is synonymous with inheritance.
-// They're wrong. ish.
-// But it’s actually a more general concept that refers
-// to code that can work with data of multiple types.
-//
-// Polymorphism comes in 3 ways in programming languages
-// (https://en.wikipedia.org/wiki/Polymorphism_(computer_science))
-//      parametric polymorphism
-//          more similar to what we have here
-//          Rust has Bounded parametric polymorphism,
-//          because each type parameter can also be given Trait bounds
-//      ad hoc polymorphism
-//         overloading
-//      subtyping polymorphism
-//          inheritance
-
-// Rust instead uses generics to abstract over different possible types
-// and trait bounds to impose constraints on what those types must provide.
-// This is sometimes called *bounded parametric polymorphism*.
-
 
 trait Descrivibile {
     fn descrivi(&self) -> String;
