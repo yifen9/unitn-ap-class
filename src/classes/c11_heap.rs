@@ -1,79 +1,30 @@
-/// This module shows some KEY concepts of Rust related to
-///     heap management
-/// The heap is handled through pointers, and pointers are regulated
-/// by ownership, so heap-management contents in Rust are quite peculiar.
-/// See
-///         https://doc.rust-lang.org/book/ch15-00-smart-pointers.html
-/// and
-///         https://doc.rust-lang.org/book/ch15-05-interior-mutability.html
-///         https://ricardomartins.cc/2016/06/08/interior-mutability
-///
-/// On the heap you store stuff using
-///             Smart pointers
-/// we'll see these instances of Smart Pointers:
-///     Box
-///     Rc
-///     Arc
-///     Ref & RefCell
-/// since what you store is accessed by dereferencing a (smart) pointer, we'll also cover
-///     The Deref Trait
-///     The Drop Trait
-///     Implicit Deref Coercions
-/// and we'll cover some advanced topics such as
-///     Interior Mutability
-///     Reference Cycles
-/// While you learn where each type is stored, use the cheatsheet below:
-///         https://cs140e.sergio.bz/notes/lec3/cheat-sheet.pdf
-
 /* ========== Box ==========
    ========================= */
-// Boxes allow you to store data on the heap rather than the stack.
-// What remains on the stack is the pointer to the heap data.
-// Typical usages:
-//  - When you have a type whose size can’t be known at compile time
-//      and you want to use a value of that type in a context that requires an exact size
-//  - When you have a large amount of data and you want to transfer ownership
-//      but ensure the data won’t be copied when you do so
-//  - When you want to own a value and you care only that it’s a type
-//      that implements a particular trait rather than being of a specific type
-//         --> Remember the Trait Objects !
-
 pub fn example_box(){
-    // variable `b` is a pointer to a cell in the heap, the content of the cell is 5
     let b = Box::new(5);
-    // we dereference using ' * '
     println!("b's value = {}", *b);
-    // but this does not work: Rust performs automatic dereferencing for us -- more on that later --
     println!("b's address = {}", b);
-    // so if we really need to know the pointer, we need to print it with the pointer formatter:
     println!("b's real address = {:p}", b);
     println!("b's another address = {:p}", &b);
 }
 
-// let's look at a bigger example
-// we import `mem` for some functions we use later on
 use std::mem;
 
-// define 2 simple structs: Point and Rectangle
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
 struct Point {
     x: f64,
     y: f64,
 }
-// A Rectangle can be specified by where its top left and bottom right Points
 #[allow(dead_code)]
 struct Rectangle {
     top_left: Point,
     bottom_right: Point,
 }
-/// a function returning the origin point
 fn origin() -> Point {
     Point { x: 0.0, y: 0.0 }
 }
-/// a function returning the origin point, but boxed
 fn boxed_origin() -> Box<Point> {
-    // Allocate this point on the heap, and return a pointer to it
     Box::new(Point { x: 0.0, y: 0.0 })
 }
 
@@ -84,7 +35,6 @@ pub fn example_box_long() {
         top_left: origin(),
         bottom_right: Point { x: 3.0, y: -4.0 }
     };
-
     // Heap allocated rectangle
     let boxed_rectangle: Box<Rectangle> = Box::new(Rectangle {
         top_left: origin(),
@@ -117,88 +67,29 @@ pub fn example_box_long() {
 // which of the following is a recursive type?
 // Array | List | Stream | Pair
 
-// Rust is so cool because its design is rooted on Programming Language Theory research
-    // do you know we spend ~ 50% of our time doing research, and not teaching,
-    // not dealing with you-related stuff ?
-    // I happen to do quite a lot of PL research! check out the Semantics of PL course
-
-// The idea of a recursive type comes from functional programming, mostly
-// essentially, it's a type that mentions itself.
-// The canonical example is Lists:
-//     v------------------------------------------------
-//  a list of natural numbers is ... ?                 |
-//  either a number followed by ..  ? a list ! --------|
-//  or an empty list
-// see the circular definition?
-
-// Recursive types can be an issue in Rust, because Rust needs to know how much space a type takes up.
-// QUIZ: can you know how much space will a Recurisve type take *at compile time* ?
-// Y | N
-
-// Fortunately, Box es have a fixed size! so you can implement a recursive type with Box es
-// Let's implement a Cons list.
-// A cons list is a data structure that comes from the Lisp programming language and its dialects.
-// In Lisp, the cons function (short for “construct function”) constructs a new pair from its two arguments,
-// which usually are a single value and another pair. These pairs containing pairs form a list.
-
-// The cons function concept has made its way into more general functional programming jargon:
-// “to cons x onto y” informally means to construct a new container instance by putting
-// the element x at the start of this new container, followed by the container y.
-// Each item in a cons list contains two elements:
-//      the value of the current item
-//      and the next item.
-//
-// The last item in the list contains only a value called Nil without a next item.
-// A cons list is produced by recursively calling the cons function.
-// The canonical name to denote the base case of the recursion is Nil.
-//
-// To implement this data structure, we can first define the following enum.
-//
+// uncomment, comment
+// enum WishList{
+//     WCons(i32, WishList),
+//     WNil,
+// }
+// DNC: error[E0072]: recursive type `List` has infinite size
 
 enum List {
-    // comment, uncomment
-    // Cons(i32, List),
     Cons(i32, Box<List>),
     Nil,
 }
-// Then we can create our list as shown below.
 use self::List::{Cons,Nil};
 pub fn recursivetypes(){
-    // let list = Cons(1, Cons(2, Cons(3, Nil)));
+    // let list : WishList = WCons(1, WCons(2, WCons(3, WNil)));
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 
 }
-// DNC: error[E0072]: recursive type `List` has infinite size
-
-// Boxes provide only the indirection and heap allocation;
-// they don’t have any other special capabilities,
-// like those we’ll see with the other smart pointer types.
-// They also don’t have any performance overhead that these special capabilities incur,
-// so they can be useful in cases like the cons list where the indirection is the only feature we need.
-//
-// Those references that do extra things are called smart pointers
-// Smart pointers are data structures that not only act like a pointer
-// but also have additional metadata and capabilities.
-// The concept of smart pointers isn’t unique to Rust:
-//  smart pointers originated in C++ and exist in other languages as well.
-// In Rust, the different smart pointers defined in the standard library
-// provide functionality beyond that provided by references.
-// One example that we’ll explore in this chapter is the reference counting smart pointer type.
-// This pointer enables you to have multiple owners of data by keeping track of the number of owners and, when no owners remain, cleaning up the data.
-
 
 
 /* ========= Deref =========
    ========================= */
-// Implementing the Deref trait allows you to customize the behavior of the dereference operator,
-//  * (as opposed to the multiplication).
-// By implementing Deref in such a way that a smart pointer can be treated like a regular reference,
-// you can write code that operates on references and use that code with smart pointers too.
-
-// let's bring the trait in scope for later
 use std::ops::Deref;
 
-// define our own box, for arbitrary stuff of type T,
 struct MyBox<T>{
     el : T,
     idx : i32
@@ -227,51 +118,21 @@ pub fn example_smart1() {
     println!("I expect 5: {}", x);
     // comment the IMPL below
     println!("I expect! 5: {}", *y);
-
-    //
-    // DNC: error[E0614]: type `MyBox<{integer}>` cannot be dereferenced
-    // let's implement Deref for Mybox then
-    // uncomment the IMPL below, now it works
 }
 
-impl<T> Deref for MyBox<T> {
-    type Target = T;
-    // type Target = i32;
-
-    fn deref(&self) -> &Self::Target {
-        &self.el
-        // &self.idx
-    }
-}
-//Without the Deref trait, the compiler can only dereference & references.
-// The deref method gives the compiler the ability to take a value
-// of any type that implements Deref and call the deref method
-// to get a & reference that it knows how to dereference.
-// IMP:
-// The reason the deref method returns a reference to a value,
-// and that the plain dereference outside the parentheses
-// in \*(y.deref()) is still necessary,
-// is the ownership system. If the deref method returned the value directly
-// instead of a reference to the value, the value would be moved out of self.
+// impl<T> Deref for MyBox<T> {
+//     type Target = T;
+//     // type Target = i32;
+//
+//     fn deref(&self) -> &Self::Target {
+//         &self.el
+//         // &self.idx
+//     }
+// }
 
 
 /* ========== Drop =========
    ========================= */
-//The second trait important to the smart pointer pattern is Drop,
-// which lets you customize what happens when a value is
-// about to go out of scope.
-// You can provide an implementation for the Drop trait on any type,
-// and the code you specify can be used to release resources
-// like files or network connections.
-// We’re introducing Drop in the context of smart pointers
-// because the functionality of the Drop trait is almost
-// always used when implementing a smart pointer.
-// For example, when a Box is dropped it will deallocate
-// the space on the heap that the box points to.
-//
-// Now we implement a custom smart pointer,
-// which will print when the instance goes out of scope.
-//
 struct CustomSmartPointer {
     data: String,
 }
@@ -292,88 +153,26 @@ pub fn example_drop() {
     }
     let p1 = &c;
     let p2 = &c;
-    //
     let mp1 = &mut c;
 
     println!("End of function");
 }
-// When running this example, Rust automatically called drop for us
-// when our instances went out of scope, calling the code we specified.
-// Variables are dropped in the reverse order of their creation,
-//      so d was dropped before c.
-// usually you would specify the cleanup code that
-// your type needs to run rather than a print message.
-
-// But WHEN do i need this ?
-// - You're implementing a Rust interface on top of a native OS resource,
-//   like file handles or network sockets.
-//   When the Rust-side value is dropped, you need to tell the OS to destroy
-//   the resource.
-// - You're implementing a Rust interface on top of some third-party library.
-//   Consider something like SQLite, libpcap, etc.
-//   You want to clean up the resource in that library when the Rust handle
-//   is dropped.
-// - You're implementing a guard, like RefCell or Mutex guards.
-//   When the guard is dropped, you need to adjust a reference count
-//   or release a lock.
-// - You're implementing a connection pool.
-//   When a pooled connection is dropped, you want to return the connection
-//   to the pool so that it can be reused later.
-// - You are logging information.
-
 
 /* ========== Rc ===========
    ========================= */
-// Rc is the reference counted smart pointer.
-// In the majority of cases, ownership is clear:
-// you know exactly which variable owns a given value.
-// However, there are cases when a single value might have multiple owners.
-// For example, in graph data structures,
-// multiple edges might point to the same node,
-// and that node is conceptually owned by all of the edges that point to it.
-// A node shouldn’t be cleaned up unless it
-// doesn’t have any edges pointing to it.
-//
-// To enable multiple ownership, Rust has a type called Rc,
-// which is an abbreviation for reference counting.
-// The Rc type keeps track of the number of references to a value
-// to determine whether or not the value is still in use.
-// If there are zero references to a value,
-// the value can be cleaned up without any references becoming invalid.
-
-// Shared references in Rust disallow mutation by default,
-// and Rc is no exception: you cannot generally obtain
-// a mutable reference to something inside an Rc.
-// If you need mutability, put a Cell or RefCell inside the Rc;
-// we'll see an example of mutability inside an Rc later
-
 pub fn example_rc(){
     // uncomment these 3 lines
     // let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
     // let b = Cons(3, Box::new(a));
     // let c = Cons(4, Box::new(a));
-    // DNC: error[E0382]: use of moved value: `a`
 
-    // To fix this example, we can change the definition of
-    // List to uce Rc in place of Box.
-    // take a look at the RcList definition below
-    // first, notice that we're calling Rc::new, not just RcCons
     let a = Rc::new(RcCons(5,
                            Rc::new(RcCons(10,
                                           Rc::new(RcNil)))));
     println!("count after creating a = {}", Rc::strong_count(&a));
 
-    // When we create b, instead of taking ownership of a, we’ll clone the Rc that a is holding,
-    // thereby increasing the number of references from one to two and letting
-    // a and b share ownership of the data in that Rc.
-    // Also, we'll take the address of a
     let b = RcCons(3, Rc::clone(&a));
     println!("count after creating b = {}", Rc::strong_count(&a));
-    // We’ll also clone a when creating c,
-    // increasing the number of references from two to three.
-    // Every time we call Rc::clone, the reference count
-    // to the data within the Rc will increase,
-    // and the data won’t be cleaned up unless there are zero references to it.
     {
         let c = RcCons(4, Rc::clone(&a));
         println!("count after creating c = {}", Rc::strong_count(&a));
@@ -382,9 +181,6 @@ pub fn example_rc(){
     println!("count after c goes out of scope = {}", Rc::strong_count(&a));
     // QUIZ: what is the sequence of printed numbers?
     // 1, 2, 3, 4 | 1, 2, 3, 2 | 1, 2, 3 ,3
-
-    //
-    // The value gets decremented in the implementation of the Drop trait!
 
     let t = Box::new(10);
     let tt = Rc::new(t);

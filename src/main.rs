@@ -16,6 +16,7 @@ use classes::c04_structshelper as c4b;
 use classes::c07_generics as c7;
 use classes::c08_lifetimes as c8;
 use classes::c09_traits as c9;
+use classes::c10_OOP as c10;
 pub fn main() {
     // // // from c01_basic
     // c1::var_ass_mut();
@@ -74,12 +75,12 @@ pub fn main() {
     //
     // // c09_traitspoly
     // c9::traitexample();
-    c9::example_notify();
+    // c9::example_notify();
     // c9::animals_example();
     // c9::example_supertraits();
     //
     // // c10_oop
-    // c10::example_oop1();
+    c10::example_oop1();
     // c10::example_animals_oop();
     // c10::example_multiple_traits();
     //

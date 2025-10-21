@@ -146,6 +146,8 @@ fn some_function_where<T, U>(t: &T, u: &U) -> i32
     0
 }
 
+/* ==== Trait Objects ======
+====================== */
 // fn ret_trait_wrong() -> dyn Summary {
 //     let t = Tweet{
 //         username: "Marco".to_string(),
@@ -165,7 +167,6 @@ fn some_function_where<T, U>(t: &T, u: &U) -> i32
 //         n
 //     }
 // }
-
 
 fn ret_trait() -> Box<dyn Summary> {
     let t = Tweet{
@@ -187,6 +188,10 @@ fn ret_trait() -> Box<dyn Summary> {
         Box::new(n)
     }
 }
+fn client(){
+    let x = ret_trait();
+    x.summarize();
+}
 
 
 struct Sheep {}
@@ -198,7 +203,6 @@ trait Animal {
 
 
 impl Animal for Sheep {
-    // uncomment function to see error
     fn noise(&self) -> &'static str {
         "baaaaah!"
     }
@@ -254,6 +258,7 @@ impl<T: Display + PartialOrd> Pair<T> {
 
 /* ==== Deriving Traits ====
    ====================== */
+
 #[derive(PartialEq, PartialOrd)]
 struct Centimeters(f64);
 #[derive(Debug,PartialEq)]
@@ -298,7 +303,6 @@ trait T {
     type Item;
     const C: i32;
     fn new() -> Self;
-
     fn f(&self) -> Self::Item;
 }
 struct ST;
@@ -330,15 +334,17 @@ trait Person {
 }
 trait Student: Person {
     fn university(&self) -> String;
+    fn samesig(&self){}
 }
 trait Programmer {
+    fn samesig(&self){}
     fn fav_language(&self) -> String;
     fn git_username(&self) -> String;
 }
 trait CompSciStudent: Programmer + Student {
     fn git_username(&self) -> String;
 }
-// Q: why can we have this "multiple inheritance" ?
+// Q: isn't this "multiple inheritance" ?
 
 fn comp_sci_student_greeting(student: &impl CompSciStudent) -> String {
     format!(
@@ -357,6 +363,8 @@ struct Entity{
 // QUIZ: how many IMPLs do we need now for
 // Entity if we say it implements CompSciStudent?
 // comment this impl, retype and see the issues
+
+
 impl CompSciStudent for Entity{
     fn git_username(&self) -> String {
         String::from("squera")
