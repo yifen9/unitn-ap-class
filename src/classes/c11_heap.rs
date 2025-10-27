@@ -29,25 +29,21 @@ fn boxed_origin() -> Box<Point> {
 }
 
 pub fn example_box_long() {
-    // Stack allocated variables
-    let point: Point = origin();
+    let point: Point = origin();    // Stack allocated
     let rectangle: Rectangle = Rectangle {
         top_left: origin(),
         bottom_right: Point { x: 3.0, y: -4.0 }
     };
-    // Heap allocated rectangle
+
     let boxed_rectangle: Box<Rectangle> = Box::new(Rectangle {
         top_left: origin(),
         bottom_right: Point { x: 3.0, y: -4.0 },
-    });
+    }); // Heap allocated
 
-    // The output of functions can be boxed
     let boxed_point: Box<Point> = Box::new(origin());
 
-    // Double indirection: we can put a box in a box
     let box_in_a_box: Box<Box<Point>> = Box::new(boxed_origin());
 
-    // let's now print a few sizes on the stack, to understand space consumption
     println!("Point occupies {} bytes on the stack", mem::size_of_val(&point));
     println!("Rectangle occupies {} bytes on the stack", mem::size_of_val(&rectangle));
 
@@ -58,7 +54,6 @@ pub fn example_box_long() {
     println!("Boxed rectangle occupies {} bytes on the stack", mem::size_of_val(&boxed_rectangle));
     println!("Boxed box occupies {} bytes on the stack", mem::size_of_val(&box_in_a_box));
 
-    // Copy the data contained in `boxed_point` into `unboxed_point`
     let unboxed_point: Point = *boxed_point;
     println!("Unboxed point occupies {} bytes on the stack", mem::size_of_val(&unboxed_point));
 }
@@ -82,7 +77,6 @@ use self::List::{Cons,Nil};
 pub fn recursivetypes(){
     // let list : WishList = WCons(1, WCons(2, WCons(3, WNil)));
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
-
 }
 
 
@@ -107,9 +101,8 @@ pub fn example_smart1() {
 
     println!("I expect 5: {}", x);
     println!("I expect 5: {}", *y);
-    // Behind the scenes in this example, what is actually run is this.
-    //     (x.deref())
-    //     *(y.deref())
+    // Behind the scenes what is actually run is this.
+    println!("I expect 5: {}", *(y.deref()));  // *(y.deref())
 
     let x = 5;
     let y = MyBox::new(x);
@@ -120,15 +113,15 @@ pub fn example_smart1() {
     println!("I expect! 5: {}", *y);
 }
 
-// impl<T> Deref for MyBox<T> {
-//     type Target = T;
-//     // type Target = i32;
-//
-//     fn deref(&self) -> &Self::Target {
-//         &self.el
-//         // &self.idx
-//     }
-// }
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+    // type Target = i32;
+
+    fn deref(&self) -> &Self::Target {
+        &self.el
+        // &self.idx
+    }
+}
 
 
 /* ========== Drop =========
@@ -187,7 +180,6 @@ pub fn example_rc(){
     let ttt = (tt.clone());
     let tttt = (tt.clone());
     let y = Rc::new(tt);
-    // let yy = Rc::new(tt);
 }
 
 use std::rc::Rc;
@@ -203,121 +195,39 @@ enum RcList {
 /* ==== Implicit Deref =====
    ========================= */
 
-// Deref coercion is a convenience that Rust performs on arguments
-// to functions and methods.
-// Deref coercion works only on types that implement the Deref trait.
-//
-// For example, deref coercion can convert &String to &str because String implements
-// the Deref trait such that it returns &str.
-//
-//
-// Deref coercion happens automatically when we pass a reference
-// to a particular type’s value as an argument to a function or method
-// that doesn’t match the parameter type in the function or method definition.
-// A sequence of calls to the deref method converts the type we provided into the type the parameter needs.
-//
-// Deref coercion was added to Rust so that programmers writing function
-// and method calls don’t need to add as many explicit references and dereferences with & and *.
-// The deref coercion feature also lets us write more code that can work for either references or smart pointers.
-//
-// To see an example, we can use our MyBox type.
 
-// this is an auxiliary function that takes an  &str  argument
 fn hello(name: &str) {
     println!("Hello, {name}!");
 }
 
 pub fn implitictderef() {
     let m = MyBox::new(String::from("Rust"));
-    // Here we’re calling the hello function with the argument &m,
-    // which is a reference to a MyBox value.
-    // Because we implemented the Deref trait on MyBox,
-    // Rust can turn &MyBox into &String by calling deref.
-    // The standard library provides an implementation
-    // of Deref on String that returns a string slice,
-    // and this is in the API documentation for Deref.
-    // Rust calls deref again to turn the
-    // &String into &str, which matches the hello function’s definition.
     hello(&m);
+    //     hello(&(*m)[..]);
 }
-
-// If Rust didn't implement deref coercion, we would have to write the following code.// ```rust
-// fn main() {
-//     let m = MyBox::new(String::from("Rust"));
-//     hello(&(*m)[..]);
-// }
-
-// Similar to how you use the Deref trait to override
-// the * operator on immutable references,
-// you can use the DerefMut trait to override
-// the * operator on mutable references.
-
-// Rust does deref coercion when it finds types and
-// trait implementations in three cases:
-//  - From `&T` to `&U` when `T: Deref<Target=U>`
-//  - From `&mut T` to `&mut U` when `T: DerefMut<Target=U>`
-//  - From `&mut T` to `&U` when `T: Deref<Target=U>`
-//
-// The first two cases are the same except for mutability.
-// The first case states that if you have a &T, and T implements Deref to some type U,
-// you can get a &U transparently.
-//
-// The second case states that the same deref coercion happens for mutable references.
-//
-// The third case is trickier:
-// Rust will also coerce a mutable reference to an immutable one.
-// But the reverse is not possible: immutable references
-// will never coerce to mutable references. B
-// ecause of the borrowing rules, if you have a mutable reference,
-// that mutable reference must be the only reference to that data
-// (otherwise, the program wouldn’t compile).
-
-
 
 /* ========== Arc ==========
    ========================= */
-// Similar to Rc, Arc (atomic reference counted) can be used when sharing data across
-//      threads
-// This struct, via the Clone implementation can create a reference pointer
-// for the location of a value in the memory heap while increasing the reference counter.
-// As it shares ownership between threads,
-// when the last reference pointer to a value is out of scope, the variable is dropped.
-
-
 pub fn arc() {
     use std::sync::Arc;
     use std::thread;
     use std::thread::sleep;
 
-    // This variable declaration is where its value is specified.
     let apple = Arc::new("the same apple");
 
     for _ in 0..10 {
-        // Here there is no value specification as it is a pointer to a reference in the memory heap.
         let apple = Arc::clone(&apple);
         // QUIZ: can i replace Arc with Rc?
 
         let tjh = thread::spawn(move || {
-            // As Arc was used, threads can be spawned using the value allocated
-            // in the Arc variable pointer's location.
             println!("{:?}", apple);
             println!("count after creating apple in a thread: {}", Arc::strong_count(&apple));
-            // What's going on? See:
-            //      https://doc.rust-lang.org/std/sync/struct.Arc.html#method.strong_count
         });
-        // if we wait for the join, then the count always goes to 2
-        // comment to see the numbers changing
         // tjh.join();
     }
 
 }
 
-/*
-    Let's try to understand what is going on with Rc (and Arc)
-    After all, they're implemented
-        in Rust
-    so we should be able to replicate them:
- */
 struct NaiveRc<T> {
     reference_count: usize,
     inner_value: T,
@@ -330,9 +240,6 @@ impl<T: Copy> Clone for NaiveRc<T> {
         // self.reference_count += 1;
 
 
-        //
-        // DNC: error[E0594]: cannot assign to `self.reference_count`, which is behind a `&` reference
-        // The problem is: clone takes an immutable reference to self, so the reference count can’t be mutated!
         return NaiveRc{
             reference_count : self.reference_count,
             inner_value : self.inner_value.clone()
@@ -352,11 +259,6 @@ impl<T: Copy> NaiveRc<T> {
         }
     }
 }
-// We also know that the reference counted wrappers in the standard library
-// (std::rc::Rc and std::sync::Arc) don’t rely on that solution,
-// which suggests there’s another way.
-//      Interior mutability
-// which is achieved through the RefCell and Cell types
 
 
 /* ======== RefCell ========

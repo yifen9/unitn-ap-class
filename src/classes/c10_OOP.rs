@@ -153,7 +153,7 @@ fn quack_trait<Q> (q: &Q)
 
 
 
-// recall the trait Show from above, this is a new trait
+// trait Show from above, this is a new trait
 trait Location {
     fn location(&self) -> String;
 }

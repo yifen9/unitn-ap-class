@@ -17,6 +17,7 @@ use classes::c07_generics as c7;
 use classes::c08_lifetimes as c8;
 use classes::c09_traits as c9;
 use classes::c10_OOP as c10;
+use classes::c11_heap as c11;
 pub fn main() {
     // // // from c01_basic
     // c1::var_ass_mut();
@@ -55,14 +56,12 @@ pub fn main() {
     // }
     // c4::ownstructs();
 
-    //
     // // from c05_modules
     // c5::externalcall();
     // c5::external_registry_call();
     //
     // // open c06_testing
 
-    //
     // c7::struct_generic();
     // c7::generics_example();
     // c7::explicit_type();
@@ -80,7 +79,7 @@ pub fn main() {
     // c9::example_supertraits();
     //
     // // c10_oop
-    c10::example_oop1();
+    // c10::example_oop1();
     // c10::example_animals_oop();
     // c10::example_multiple_traits();
     //
@@ -89,7 +88,7 @@ pub fn main() {
     // c11::example_box_long();
     // c11::recursivetypes();
     // c11::example_smart1();
-    // c11::example_drop();
+    c11::example_drop();
     // c11::example_rc();
     // c11::implitictderef();
     // c11::arc();
