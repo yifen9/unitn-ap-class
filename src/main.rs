@@ -88,14 +88,14 @@ pub fn main() {
     // c11::example_box_long();
     // c11::recursivetypes();
     // c11::example_smart1();
-    c11::example_drop();
+    // c11::example_drop();
     // c11::example_rc();
     // c11::implitictderef();
     // c11::arc();
     // c11::refcell_usage();
     // c11::refcell_usage_2();
     // c11::tests::it_sends_an_over_75_percent_warning_message();
-    // c11::workingtests::it_sends_an_over_75_percent_warning_message();
+    c11::workingtests::it_sends_an_over_75_percent_warning_message();
     // c11::rc_plus_refcell::examplepcrefcell();
     // c11::overflow::exampleoverflow();
     // c11::graphexample();

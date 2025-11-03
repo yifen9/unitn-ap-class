@@ -129,7 +129,7 @@ pub fn example_animals_oop() {
     quack_trait(&duck1);
     quack_trait(&parrot);
 }
-// QUIZ: what is the difference between these two?
+// Q: what is the difference between these two?
 fn quack_ref (q: &dyn Quack) {
     q.quack();
 }
